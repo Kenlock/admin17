@@ -15,10 +15,11 @@ class CreateCrudsTable extends Migration
     {
         Schema::create('cruds', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->text('description');
-            $table->string('image');
-            $table->enum('status',['publish','un_publish']);
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->string('order')->nullable();
+            $table->enum('status',['publish','draft']);
             $table->timestamps();
         });
     }

@@ -18,9 +18,10 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-        
+
   <link rel="stylesheet" href="{{ assetAdmin(null) }}/dist/css/skins/_all-skins.min.css">
   <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/rowreorder/1.2.3/css/rowReorder.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.9.0/sweetalert2.min.css">
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ assetAdmin(null) }}/plugins/select2/select2.min.css"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

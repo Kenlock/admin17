@@ -34,11 +34,11 @@ class RoleController extends AdminController
     		->whereNotIn('id',[Admin::getUser()->role->id,1]);
 		return	Table::of($model)
 	    		->addColumn('action',function($model){
-	    			return admin()->html->linkActions($model->id);
+	    			return admin()->html->linkActions($model);
 	    		})
 	    		->make(true);
 	}
-	
+
 	public function getCreate()
 	{
 		$menus = Menu::where('parent_slug',null)->get();
@@ -59,7 +59,7 @@ class RoleController extends AdminController
 		{
 			$data = $this->beforeSave($request->all());
 	        $model = $this->model->create($data);
-			
+
 			$methods = count($request->method);
 			$permission = [];
 			for($a=0;$a<$methods;$a++)
@@ -75,7 +75,7 @@ class RoleController extends AdminController
 					];
 				}
 			}
-			Permission::insert($permission);	
+			Permission::insert($permission);
 			DB::commit();
 			return $this->redirectActionSuccess('Data has been saved');
 
@@ -83,7 +83,7 @@ class RoleController extends AdminController
 			DB::rollback();
 			return $this->redirectActionInfo('Error Transaction Query : '.$e->getMessage());
 		}
-		
+
 	}
 
 	public function getUpdate($id)
@@ -92,9 +92,9 @@ class RoleController extends AdminController
     	{
     		return $this->redirectActionInfo('This data cannot be updated!');
     	}
-		
+
     	$model = $this->model->findOrFail($id);
-			
+
 		$cek = function($method)use($model){
     		$menu_method = $model->menu_methods()
     			->where('menu_method_id',$method->pivot->id)
@@ -106,7 +106,7 @@ class RoleController extends AdminController
         };
 
 		$menus = Menu::where('parent_slug',null)->get();
-		
+
 		return $this->makeView('_form',compact('model','menus','cek'));
 	}
 
@@ -118,7 +118,7 @@ class RoleController extends AdminController
 			$data = $this->beforeSave($request->all());
 	        $model = $this->model->find($id);
 			$model->update($data);
-			
+
 			$deletePermission = $model->permissions()->delete();
 
 			$methods = count($request->method);
@@ -136,7 +136,7 @@ class RoleController extends AdminController
 					];
 				}
 			}
-			Permission::insert($permission);	
+			Permission::insert($permission);
 			DB::commit();
 			return $this->redirectActionSuccess('Data has been updated');
 
@@ -153,7 +153,7 @@ class RoleController extends AdminController
     		return $this->redirectActionInfo('This data cannot be deleted!');
     	}
     	return $this->delete($this->model->findOrFail($id));
-    	
+
     }
 
 	public function beforeSave($request)

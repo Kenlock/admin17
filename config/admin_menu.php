@@ -58,7 +58,7 @@ return [
 				'label'=>'Crud Example',
 				'controller'=>'Admin\CrudController',
 				'methods'=>[
-					'index','create','update','delete','publish',
+					'index','create','update','delete','publishdraft',
 				],
 			],
 		],

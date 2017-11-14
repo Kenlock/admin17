@@ -45,7 +45,7 @@ $(document).ready(function(){
 	   }, 500);
 	});
 
-	$('select').select2();
+	//$('select').select2();
 });
 </script>
 @endpush

@@ -1,9 +1,5 @@
 <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      &nbsp;
-    </div>
-    <strong>Copyright &copy; 2017 <a href="#">{{ env('APP_NAME') }}</a>.</strong> All rights
-    reserved.
+    &nbsp;
   </footer>
 
   <!-- Control Sidebar -->
@@ -204,12 +200,14 @@
 <!-- ./wrapper -->
 
 <!-- jQuery 2.2.3 -->
-<script src="{{ assetAdmin(null) }}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="{{ assetAdmin(null) }}/bootstrap/js/bootstrap.min.js"></script>
 
-<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/rowreorder/1.2.3/js/dataTables.rowReorder.min.js"></script>
 
 <!-- SlimScroll -->
 <script src="{{ assetAdmin(null) }}/plugins/slimScroll/jquery.slimscroll.min.js"></script>
@@ -226,6 +224,7 @@
 <!-- elFinder JS (REQUIRED) -->
 <script src="{{ asset($elfinderPath.'/js/elfinder.min.js') }}"></script>
 <script src="//code.highcharts.com/highcharts.js"></script>
+
 @include("admin.app_js")
 @stack('scripts')
 <script type="text/javascript">

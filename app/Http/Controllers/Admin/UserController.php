@@ -32,7 +32,7 @@ class UserController extends AdminController
 
 		return	Table::of($model)
 	    		->addColumn('action',function($model){
-	    			return admin()->html->linkActions($model->id);
+	    			return admin()->html->linkActions($model);
 	    		})
 	    		->make(true);
 	}

@@ -39,40 +39,63 @@ class Html
         return $permission == 'method_found' ? $this->href($values, $attributes) : null;
     }
 
-    public function linkDelete($id)
+    public function linkDelete($model)
     {
         $attributes = [
             'class'   => 'btn btn-danger btn-sm',
-            'href'    => urlBackendAction('delete/' . $id),
+            'href'    => urlBackendAction('delete/' . $model->id),
             'onclick' => 'return confirm("Are you sure want to delete this item ?")',
         ];
 
         return $this->href('Delete', $attributes);
     }
 
-    public function linkUpdate($id)
+    public function linkUpdate($model)
     {
         $attributes = [
             'class' => 'btn btn-success btn-sm',
-            'href'  => urlBackendAction('update/' . $id),
+            'href'  => urlBackendAction('update/' . $model->id),
         ];
 
         return $this->href('Edit', $attributes);
     }
 
-    public function linkView($id)
+    public function linkView($model)
     {
         $attributes = [
             'class' => 'btn btn-default btn-sm',
-            'href'  => urlBackendAction('view/' . $id),
+            'href'  => urlBackendAction('view/' . $model->id),
         ];
 
         return $this->href('View', $attributes);
     }
 
-    public function linkActions($id)
+    public function linkPublishdraft($model)
     {
-        $methods = ['update', 'delete', 'view'];
+        if($model->status == 'publish')
+        {
+            $attributes = [
+                'class' => 'btn btn-info btn-sm',
+                'href'  => urlBackendAction('action-bool/' . $model->id),
+                'onclick' => 'return confirm("Are You sure want to Make Draft this data ?")',
+            ];
+
+            return $this->href('Publish', $attributes);
+        }else{
+            $attributes = [
+                'class' => 'btn btn-warning btn-sm',
+                'href'  => urlBackendAction('action-bool/' . $model->id),
+                'onclick' => 'return confirm("Are You sure want to Make Publish this data ?")',
+            ];
+
+            return $this->href('Draft', $attributes);
+        }
+
+    }
+
+    public function linkActions($model)
+    {
+        $methods = ['update', 'delete', 'view','publishdraft'];
         $menu    = \Admin::getMenu();
         $str     = "";
         foreach ($methods as $method) {
@@ -80,7 +103,7 @@ class Html
             $function   = "link$ucwords";
             $permission = $this->permission->roleHasPermissionThisMethod("", $method);
             if ($permission == 'method_found') {
-                $str .= $this->{$function}($id) . '  ';
+                $str .= $this->{$function}($model) . '  ';
             }
         }
         return $str;

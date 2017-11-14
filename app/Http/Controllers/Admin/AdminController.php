@@ -38,17 +38,17 @@ class AdminController extends Controller
     {
         $message=!empty($message) ? $message : "Data has been updated";
 
-        return $this->redirectAction($message,$action,'success');   
+        return $this->redirectAction($message,$action,'success');
     }
 
     public function redirectActionInfo($message,$action="")
     {
-        return $this->redirectAction($message,$action,'info');   
+        return $this->redirectAction($message,$action,'info');
     }
 
     public function redirectActionDanger($message,$action="")
     {
-        return $this->redirectAction($message,$action,'danger');   
+        return $this->redirectAction($message,$action,'danger');
     }
 
     public function create($model,array $data)
@@ -118,6 +118,36 @@ class AdminController extends Controller
             }else{
                 @unlink(public_path('contents/'.$model->$fieldName));
             }
+        }
+    }
+
+    public function publish_draft($model)
+    {
+        $message = "Data has been Published";
+        $status = 'publish';
+        if($model->status == 'publish')
+        {
+            $status = 'draft';
+            $message = "Data has been Drafted";
+        }
+
+        $model->update([
+            'status'=>$status
+        ]);
+
+        return redirect()->back()
+            ->with('success',$message);
+    }
+
+    public function update_order($model)
+    {
+        $request = request();
+        $count   = count($request->id);
+        for ($a = 0; $a < $count; $a++) {
+            $model->find($request->id[$a])
+                ->update([
+                    'order' => $a,
+                ]);
         }
     }
 }
