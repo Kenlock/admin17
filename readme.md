@@ -9,7 +9,7 @@ this is beta version
 - cp .env.example .env
 - setting your configuration
 - php artisan migrate
-- php artisan db:seed
+- php artisan generate-menu
 
 
 http://youapp.dev/admin-panel
