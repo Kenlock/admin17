@@ -87,6 +87,16 @@ class AdminController extends Controller
         }
     }
 
+    public function handleUploadStorage($request,$model,$fieldName,$resize=[])
+    {
+        $image = $this->handleUpload($request,$model,$fieldName,$resize);
+        $path = asset('contents/'.$image);
+        if(!empty($image))
+        {
+            \Storage::put('reza.jpg',public_path("contents/".$image));
+        }
+    }
+
     public function handleUpload($request,$model,$fieldName,$resize=[])
     {
         $hiddenName = "hidden_$fieldName";

@@ -93,6 +93,18 @@ class Html
 
     }
 
+    public function cekMenuMethod($method)
+    {
+        $menu =  \Admin::getMenu();
+        $method= \Admin::getMethod($method);
+        $model = new \App\Models\MenuMethod();
+        $cek = $model->where('menu_id',$menu->id)
+            ->where('method_id',$method->id)
+            ->count();
+
+        return $cek > 0 ? true : false;
+    }
+
     public function linkActions($model)
     {
         $methods = ['update', 'delete', 'view','publishdraft'];
@@ -103,7 +115,11 @@ class Html
             $function   = "link$ucwords";
             $permission = $this->permission->roleHasPermissionThisMethod("", $method);
             if ($permission == 'method_found') {
-                $str .= $this->{$function}($model) . '  ';
+                $cek =  $this->cekMenuMethod($method);  
+                if($cek == true)
+                {
+                     $str .= $this->{$function}($model) . '  ';
+                }        
             }
         }
         return $str;
@@ -133,14 +149,14 @@ class Html
         $strip .= $strip . "-";
         foreach ($menu->childs as $child) {
             $tr .= "<tr>
-		        <td>$strip $child->label</td>
-		        <td>";
+                <td>$strip $child->label</td>
+                <td>";
             foreach ($child->methods()->where('menu_id', $child->id)->get() as $m) {
                 $tr .= \Form::hidden('method_code[]', $m->method) . \Form::hidden('menu_slug[]', $child->slug);
                 $tr .= $m->method . ' ' . \Form::checkbox('method[]', $m->pivot->id, $cek($m)) . ' | ';
             }
             $tr .= "</td>
-		      </tr>";
+              </tr>";
             $tr .= $this->childMenuPermission($child, $cek, $strip);
         }
 
