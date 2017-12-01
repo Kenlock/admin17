@@ -20,6 +20,7 @@ class CreateMenusTable extends Migration
             $table->string('label');
             $table->string('controller')->index();
             $table->integer('order');
+            $table->string('icon')->nullable();
             $table->enum('is_active',['true','false']);
             $table->timestamps();
 

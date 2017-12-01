@@ -2,11 +2,13 @@
 return [
     'dashboard'           => [
         'label'      => 'Dashboard',
+        'icon'       => 'fa fa-tachometer',
         'controller' => 'Admin\DashboardController',
         'methods'    => ['index'],
-    ],    
+    ],
     'user-administration' => [
         'label'      => 'User Administration',
+        'icon'       => 'fa fa-user',
         'controller' => '#',
         'child'      => [
             'role' => [
@@ -27,15 +29,16 @@ return [
     ],
     'media-library'       => [
         'label'      => 'Media Library',
+        'icon'      => 'fa fa-file-image-o',
         'controller' => 'Admin\MediaLibraryController',
         'methods'    => ['index'],
     ],
     'setting'             => [
         'label'      => 'Setting',
+        'icon'      => 'fa fa-plug',
         'controller' => '#',
         'child'      => [
-            
-            
+
             'setting-meta'    => [
                 'label'      => 'Meta',
                 'controller' => 'Admin\SettingMetaController',
@@ -55,6 +58,7 @@ return [
     'developer'           => [
         'label'      => 'Developer Administration',
         'controller' => '#',
+        'icon'=>'fa fa-code',
         'child'      => [
             'example' => [
                 'label'      => 'Crud Example',

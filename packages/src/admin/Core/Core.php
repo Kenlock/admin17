@@ -40,6 +40,7 @@ class Core
                 'methods'     => @$valParent['methods'],
                 'order'       => $no,
                 'is_active'   => 'true',
+                'icon'   => @$valParent['icon'],
             ];
 
             if (isset($valParent['child'])) {
@@ -86,7 +87,7 @@ class Core
         {
             $this->menu->whereNotIn('slug', $slugs)->delete();
             $getMethod = [];
-            $loop = 0;
+            $loop      = 0;
             foreach ($menus as $row) {
                 $loop++;
                 $methods = [];
@@ -100,7 +101,7 @@ class Core
 
                 unset($row['methods']);
                 $row['order'] = $loop;
-                $modelMenu = $this->menu->where('slug', $row['slug'])->first();
+                $modelMenu    = $this->menu->where('slug', $row['slug'])->first();
                 if (!empty($modelMenu->id)) {
                     $modelMenu->update($row);
                 } else {
@@ -130,32 +131,30 @@ class Core
         }
     }
 
-    public function activeChild($slug="")
+    public function activeChild($slug = "")
     {
         $rawMenu = $this->rawMenu();
 
         $menu = $this->getMenu($slug);
 
-        if($menu->childs()->count())
-        {
-            $cek = $menu->childs()->where('slug',$this->rawMenu())->first();
+        if ($menu->childs()->count()) {
+            $cek = $menu->childs()->where('slug', $this->rawMenu())->first();
 
-            if(!empty($cek->id))
-            {
+            if (!empty($cek->id)) {
                 return 'active';
             }
         }
-            
+
     }
 
     public function displayMenuChilds($row)
     {
         $html = '<ul class="treeview-menu">';
-        foreach ($row->childs()->orderBy('order','asc')->get() as $c) {
-            $active   = $this->activeChild($c->slug);
-            $count = $c->childs()->count();
-            $url   = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';
-            $html .= "<li class='".$active."'>";
+        foreach ($row->childs()->orderBy('order', 'asc')->get() as $c) {
+            $active = $this->activeChild($c->slug);
+            $count  = $c->childs()->count();
+            $url    = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';
+            $html .= "<li class='" . $active . "'>";
             $html .= '<a href="' . $url . '"><i class="fa fa-circle-o"></i> ' . $c->label;
             if ($count > 0) {
                 $html .= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
@@ -181,7 +180,7 @@ class Core
                 if ($slug == $menu->parent->parent->slug) {
                     $result = 'active';
                 }
-            }else{
+            } else {
                 if (!empty($menu->parent->id)) {
                     if ($slug == $menu->parent->slug) {
                         $result = 'active';
@@ -198,6 +197,8 @@ class Core
         $menus = $this->menu->with('childs')->getParents()->get();
         $html  = "";
         foreach ($menus as $row) {
+            $icon = !empty($row->icon) ? $row->icon : 'fa fa-file';
+               
             $countChild = $row->childs()->count();
             $class      = $countChild > 0 ? 'treeview' : ' ';
             $active     = $this->active($row->slug);
@@ -206,7 +207,8 @@ class Core
             $html .= '<li class = "' . $class . ' ' . $active . '">';
 
             $html .= "<a href='$url'>";
-            $html .= '<i class="fa fa-share"></i> <span>' . $row->label . '</span>';
+            
+            $html .= '<i class="'.$icon.'"></i> <span>' . $row->label . '</span>';
             if ($countChild > 0) {
                 $html .= ' <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
             }

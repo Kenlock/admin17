@@ -8,7 +8,7 @@ use Admin;
 
 class Menu extends Model
 {
-    public $fillable = ['slug','parent_slug','label','controller','order','is_active'];
+    public $fillable = ['slug','parent_slug','label','controller','order','is_active','icon'];
 
     public function parent()
     {
