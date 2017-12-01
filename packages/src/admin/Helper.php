@@ -43,3 +43,8 @@ function setting()
 {
 	return new \App\Models\Setting();
 }
+
+function getId()
+{
+	return \Admin::getId();
+}

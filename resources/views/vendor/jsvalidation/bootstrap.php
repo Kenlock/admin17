@@ -53,7 +53,7 @@
                 if (errors) {
                     swal(
                       'Oops...',
-                      'Something went wrong!',
+                      'Check your Input',
                       'error'
                     )
                 }
