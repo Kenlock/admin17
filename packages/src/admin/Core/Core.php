@@ -86,7 +86,9 @@ class Core
         {
             $this->menu->whereNotIn('slug', $slugs)->delete();
             $getMethod = [];
+            $loop = 0;
             foreach ($menus as $row) {
+                $loop++;
                 $methods = [];
                 if (isset($row['methods'])) {
                     $methods = $row['methods'];
@@ -97,6 +99,7 @@ class Core
                 }
 
                 unset($row['methods']);
+                $row['order'] = $loop;
                 $modelMenu = $this->menu->where('slug', $row['slug'])->first();
                 if (!empty($modelMenu->id)) {
                     $modelMenu->update($row);
@@ -148,7 +151,7 @@ class Core
     public function displayMenuChilds($row)
     {
         $html = '<ul class="treeview-menu">';
-        foreach ($row->childs()->get() as $c) {
+        foreach ($row->childs()->orderBy('order','asc')->get() as $c) {
             $active   = $this->activeChild($c->slug);
             $count = $c->childs()->count();
             $url   = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';

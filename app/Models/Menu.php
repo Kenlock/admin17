@@ -29,6 +29,6 @@ class Menu extends Model
     public function scopeGetParents($query)
     {
         return $query->where('parent_slug',null)
-            ->orderBy('id','asc');
+            ->orderBy('order','asc');
     }
 }

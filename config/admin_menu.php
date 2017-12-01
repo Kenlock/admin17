@@ -4,7 +4,7 @@ return [
         'label'      => 'Dashboard',
         'controller' => 'Admin\DashboardController',
         'methods'    => ['index'],
-    ],
+    ],    
     'user-administration' => [
         'label'      => 'User Administration',
         'controller' => '#',
@@ -34,6 +34,8 @@ return [
         'label'      => 'Setting',
         'controller' => '#',
         'child'      => [
+            
+            
             'setting-meta'    => [
                 'label'      => 'Meta',
                 'controller' => 'Admin\SettingMetaController',
