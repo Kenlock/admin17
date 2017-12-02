@@ -4,10 +4,9 @@ this is beta version
 
 #### How to installs
 
-- clone
-- composer install
+- composer create-project muhamadrezaar/admin17 yourappname
 - cp .env.example .env
-- setting your configuration
+- setting your database configuration
 - php artisan migrate
 - php artisan generate-menu
 
@@ -15,4 +14,5 @@ this is beta version
 http://youapp.dev/admin-panel
 
 email: admin@admin.com
+
 password: password
