@@ -1,6 +1,6 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "muhamadrezaar/admin17",
+    "description": "Laravel admin panel, iam use this for my freelance",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
