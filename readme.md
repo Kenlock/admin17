@@ -4,7 +4,7 @@ this is beta version
 
 #### How to installs
 
-- composer create-project muhamadrezaar/admin17 yourappname
+- composer create-project --stability=dev muhamadrezaar/admin17  yourappname
 - cp .env.example .env
 - setting your database configuration
 - php artisan migrate

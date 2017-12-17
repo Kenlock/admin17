@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,7 +177,8 @@ return [
         Barryvdh\Elfinder\ElfinderServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Appstract\BladeDirectives\BladeDirectivesServiceProvider::class,
-         Appstract\BladeDirectives\BladeDirectivesServiceProvider::class,
+        Dimsav\Translatable\TranslatableServiceProvider::class,
+        
         /*
          * Application Service Providers...
          */

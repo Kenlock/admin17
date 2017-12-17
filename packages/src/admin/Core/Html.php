@@ -137,10 +137,10 @@ class Html
         return $str;
     }
 
-    public function selectStatus()
+    public function selectStatus($val="")
     {
         $html = \Form::label('status', 'Status');
-        return $html .= \Form::select('status', ['publish' => 'Publish', 'draft' => 'Draft'], null, ['class' => 'form-control']);
+        return $html .= \Form::select('status', ['publish' => 'Publish', 'draft' => 'Draft'], $val, ['class' => 'form-control']);
     }
 
     public function childMenuPermission($menu, $cek, $strip = "")

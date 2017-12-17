@@ -48,3 +48,38 @@ function getId()
 {
 	return \Admin::getId();
 }
+
+function languages()
+{
+	return config('admin.languages');
+}
+
+function langKeys()
+{
+	$res = [];
+	foreach(languages() as $key => $val)
+	{
+		$res[]=$key;
+	}
+	return $res;
+}
+
+function ruleTrans($fields)
+{
+	$result = [];
+
+    foreach(langKeys() as $lang)
+    {
+        foreach($fields as $field => $rules)
+        {
+            $result[$lang.'.'.$field]=$rules;
+        }
+    }
+
+    return $result;
+}
+
+function isJson($string)
+{
+   return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
+}

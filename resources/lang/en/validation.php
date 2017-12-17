@@ -116,6 +116,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'id.name.'=>'Name (Bahasa)',
+        'en.name'=>'Name (English)',
+    ],
 
 ];

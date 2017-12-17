@@ -67,6 +67,20 @@ return [
                     'index', 'create', 'update', 'delete', 'publishdraft',
                 ],
             ],
+            'dimsav' => [
+                'label'      => 'Multi Language Example',
+                'controller' => 'Admin\DimsavController',
+                'methods'    => [
+                    'index', 'create', 'update', 'delete', 'publishdraft',
+                ],
+            ],
+            'static' => [
+                'label'      => 'Static Example',
+                'controller' => 'Admin\StaticController',
+                'methods'    => [
+                    'index',
+                ],
+            ],
         ],
     ],
 ];

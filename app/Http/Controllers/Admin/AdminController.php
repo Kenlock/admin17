@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Admin;
+use App\Models\StaticModel;
 
 class AdminController extends Controller
 {
@@ -131,6 +132,38 @@ class AdminController extends Controller
         }
     }
 
+    public function handleUploadStatic($request,$fieldName,$resize=[])
+    {
+        $hiddenName = "hidden_$fieldName";
+        $oldImage = $request->old_image;
+        $image = $request->file($fieldName);
+        if(!empty($image))
+        {
+            @unlink(public_path('contents/'.$oldImage));
+
+            $imageName = str_random(10).'.'.$image->getClientOriginalExtension();
+
+            $image = \Image::make($image);
+
+            if(!empty($resize))
+            {
+                $image = $image->resize($resize[0],$resize[1]);
+            }
+
+            $image = $image->save(public_path('contents/'.$imageName));
+
+            return $imageName;
+
+        }else{
+           if(isset($request->{$hiddenName}))
+            {
+                return $oldImage;
+            }else{
+                @unlink(public_path('contents/'.$oldImage));
+            }
+        }
+    }
+    
     public function publish_draft($model)
     {
         $message = "Data has been Published";
@@ -159,5 +192,30 @@ class AdminController extends Controller
                     'order' => $a,
                 ]);
         }
+    }
+
+    public function updateStaticPage($inputs,$group)
+    {
+        $this->model = new StaticModel();
+
+        $byPass          = ['_token'];
+        $data = [];
+        foreach ($inputs as $key => $value) {
+            if (!in_array($key, $byPass)) {
+                if (is_array($value)) {
+                    $value = json_encode($value);
+                }
+
+                $data[] = [
+                    'group' => $group,
+                    'key'   => $key,
+                    'value' => $value,
+                ];
+            }
+        }
+
+        $this->model->whereGroup($group)->delete();
+
+        $this->model->insert($data);
     }
 }

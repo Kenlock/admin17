@@ -8,6 +8,8 @@
         "php": ">=7.0.0",
         "appstract/laravel-blade-directives": "^0.4.5",
         "barryvdh/laravel-elfinder": "^0.3.11",
+        "cviebrock/eloquent-sluggable": "^4.4",
+        "dimsav/laravel-translatable": "^8.0",
         "doctrine/dbal": "^2.5",
         "fideloper/proxy": "~3.3",
         "garygreen/pretty-routes": "^0.0.8",
