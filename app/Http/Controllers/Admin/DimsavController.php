@@ -18,12 +18,7 @@ class DimsavController extends AdminController
 
     public function getData()
     {
-        $model = $this->model->select('dimsavs.id', 'dimsav_translations.name', 'status', 'order')
-            ->join('dimsav_translations', function ($join) {
-                $join->on('dimsav_translations.dimsav_id', '=', 'dimsavs.id')
-                    ->where('dimsav_translations.locale', 'en');
-            })
-            ->orderBy('order', 'asc');
+        $model = $this->model->datatablesTranslations();
 
         return Table::of($model)
             ->addColumn('action', function ($model) {

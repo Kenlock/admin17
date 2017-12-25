@@ -26,7 +26,7 @@ class DimsavRequest extends FormRequest
         $trans = [
             'name' => 'required',
         ];
-        // return [];
+        
         return ruleTrans($trans);
     }
 }

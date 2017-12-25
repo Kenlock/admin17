@@ -23,7 +23,7 @@
                     @foreach(languages() as $key => $val)
                       <div id="tabs-{{ $key }}">
                             <div class="form-group">
-                                {!! Form::label('name','Nama ') !!}
+                                {!! Form::label('name','Name') !!}
                                 {!! Form::text($key.'[name]',@$model->translate($key)->name,['class'=>'form-control']) !!}
                             </div>
                       </div>

@@ -46,4 +46,19 @@ class Dimsav extends Model  {
      */
     protected $dates = ['created_at', 'updated_at'];
 
+    public function scopeDatatablesTranslations($query)
+    {
+        return $query->select('dimsavs.id', 'dimsav_translations.name', 'status', 'order')
+            
+            ->join('dimsav_translations', function ($join) {
+            
+                $join->on('dimsav_translations.dimsav_id', '=', 'dimsavs.id')
+            
+                    ->where('dimsav_translations.locale', 'en');
+            
+            })
+            
+            ->orderBy('order', 'asc');
+    }
+
 }

@@ -2,77 +2,74 @@
 
 function assetAdmin($path)
 {
-	return asset('admin/'.$path);
+    return asset('admin/' . $path);
 }
 
-function routeController($slug,$class)
+function routeController($slug, $class)
 {
-	return \RouteController::build($slug,$class);
+    return \RouteController::build($slug, $class);
 }
 
 function admin()
 {
-	$class=new \Admin\Admin;
-	return $class;
+    $class = new \Admin\Admin;
+    return $class;
 }
 
 function urlBackendAction($action)
 {
-	return admin()->urlBackendAction($action);
+    return admin()->urlBackendAction($action);
 }
 
 function carbon()
 {
-	return new \Carbon\Carbon;
+    return new \Carbon\Carbon;
 }
 
 function parse($parse)
 {
-	return carbon()->parse($parse);
+    return carbon()->parse($parse);
 }
 
 function ip_info($ip)
 {
-	$url = "http://ip-api.com/json/".$ip;
-	$contents = file_get_contents($url);
-	$array = json_decode($contents);
-	return $array;    
+    $url      = "http://ip-api.com/json/" . $ip;
+    $contents = file_get_contents($url);
+    $array    = json_decode($contents);
+    return $array;
 }
 
 function setting()
 {
-	return new \App\Models\Setting();
+    return new \App\Models\Setting();
 }
 
 function getId()
 {
-	return \Admin::getId();
+    return \Admin::getId();
 }
 
 function languages()
 {
-	return config('admin.languages');
+    return config('admin.languages');
 }
 
 function langKeys()
 {
-	$res = [];
-	foreach(languages() as $key => $val)
-	{
-		$res[]=$key;
-	}
-	return $res;
+    $res = [];
+    foreach (languages() as $key => $val) {
+        $res[] = $key;
+    }
+    return $res;
 }
 
 function ruleTrans($fields)
 {
-	$result = [];
+    $result = [];
 
-    foreach(langKeys() as $lang)
-    {
-        foreach($fields as $field => $rules)
-        {
-            $result[$lang.'.'.$field]=$rules;
+    foreach (langKeys() as $lang) {
+        foreach ($fields as $field => $rules) {
+            $result[$lang . '.' . $field] = $rules;
         }
     }
 
@@ -81,5 +78,5 @@ function ruleTrans($fields)
 
 function isJson($string)
 {
-   return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
+    return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
 }
