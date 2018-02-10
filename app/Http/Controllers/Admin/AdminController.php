@@ -218,4 +218,6 @@ class AdminController extends Controller
 
         $this->model->insert($data);
     }
+
+    
 }

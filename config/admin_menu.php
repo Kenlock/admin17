@@ -29,13 +29,13 @@ return [
     ],
     'media-library'       => [
         'label'      => 'Media Library',
-        'icon'      => 'fa fa-file-image-o',
+        'icon'       => 'fa fa-file-image-o',
         'controller' => 'Admin\MediaLibraryController',
         'methods'    => ['index'],
     ],
     'setting'             => [
         'label'      => 'Setting',
-        'icon'      => 'fa fa-plug',
+        'icon'       => 'fa fa-plug',
         'controller' => '#',
         'child'      => [
 
@@ -58,7 +58,7 @@ return [
     'developer'           => [
         'label'      => 'Developer Administration',
         'controller' => '#',
-        'icon'=>'fa fa-code',
+        'icon'       => 'fa fa-code',
         'child'      => [
             'example' => [
                 'label'      => 'Crud Example',
@@ -67,14 +67,21 @@ return [
                     'index', 'create', 'update', 'delete', 'publishdraft',
                 ],
             ],
-            'dimsav' => [
+            'scaffolding' => [
+                'label'      => 'Scaffolding Example',
+                'controller' => 'Admin\ScaffoldingController',
+                'methods'    => [
+                    'index', 'create', 'update', 'delete', 'publishdraft',
+                ],
+            ],
+            'dimsav'  => [
                 'label'      => 'Multi Language Example',
                 'controller' => 'Admin\DimsavController',
                 'methods'    => [
                     'index', 'create', 'update', 'delete', 'publishdraft',
                 ],
             ],
-            'static' => [
+            'static'  => [
                 'label'      => 'Static Example',
                 'controller' => 'Admin\StaticController',
                 'methods'    => [
