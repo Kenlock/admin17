@@ -36,23 +36,26 @@ $(function() {
         serverSide: true,
         ajax: '{!! urlBackendAction('data') !!}',
         ordering:false,
-        // rowReorder:true,
+        rowReorder:{{ $row_order }},
         columns: {!! $columns !!}
     });
-
-    // table.on( 'row-reorder', function ( e, diff, edit ) {
-    //        $.ajax({
-    //            url: '{{ urlBackendAction("update-order") }}',
-    //            type: 'get',
-    //            data: $("#form").serialize(),
-    //            success:function(){
-    //                table.ajax.reload();
-    //            },
-    //        });
-    //    } );
+    @if($row_order == true)
+    table.on( 'row-reorder', function ( e, diff, edit ) {
+           $.ajax({
+               url: '{{ urlBackendAction("update-order") }}',
+               type: 'get',
+               data: $("#form").serialize(),
+               success:function(){
+                    table.ajax.reload();
+                   // alert('ok');
+               },
+           });
+       } );
+    @endif
 });
 
-
-
 </script>
+
+
+
 @endpush

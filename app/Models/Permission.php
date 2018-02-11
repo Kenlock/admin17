@@ -13,16 +13,17 @@ class Permission extends Model
     public function roleHasPermissionThisMethod($menu="",$method="")
     {
     	$menu = Admin::getMenu($menu);
-    	$method=Admin::getMethod($method);
-    	if(!empty($menu->id) && !empty($method->id))
+    	// $method=Admin::getMethod($method);
+    	$method = $menu->methods()->where('method',$method)->first();
+		if(!empty($menu->id) && !empty($method->id))
     	{
     		$role=Admin::getUser()->role;
 	    	$menuMethod = $role->menu_methods()
 	    		->where('menu_id',$menu->id)
 	    		->where('method_id',$method->id)
 	    		->first();
-	    	
 	    	if(!empty($menuMethod->id) || Admin::getUser()->role->code == 'superadmin')
+	    	// if(!empty($menuMethod->id))
 	    	{
 	    		return 'method_found';
 	    	}else{

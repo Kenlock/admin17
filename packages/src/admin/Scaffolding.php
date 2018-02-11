@@ -114,11 +114,19 @@ trait Scaffolding
         return json_encode($records);
     }
 
+    public function rowOrder()
+    {
+        $table_fields = $this->table_fields();
+
+        return $row_order = !empty($table_fields['row_order']) ? $table_fields['row_order'] : 'false';
+    }
+
     public function getIndex()
     {
         return $this->makeView('index', [
             'table_headers' => $this->table_headers(),
             'columns'       => $this->table_records(),
+            'row_order'     => $this->rowOrder(),
         ]);
     }
 
@@ -143,20 +151,29 @@ trait Scaffolding
         return $data;
     }
 
-    public function form_text($model,$name, $prop)
+    public function form_text($model, $name, $prop)
     {
         $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
-        $value      = empty($prop['value']) ? $model->$name : $prop['value'];
+        $value      = empty($prop['value']) ? @$model->$name : $prop['value'];
         $multi      = @$prop['multi_language'];
         $result     = "";
         if ($multi == true) {
             foreach (languages() as $key => $val) {
                 $result .= "<div class = 'multi_language_$key' style = 'margin-bottom:10px;' >";
                 $result .= \Form::label(ucwords($prop['label']));
+
+                $value = @$prop['value'];
+                if (empty($prop['value'])) {
+                    if (method_exists(@$model, 'translate') == true) {
+                        $value = @$model->translate($key)->$name;
+                    } else {
+                        $value = @$model->$key->$name;
+                    }
+                }
+
                 $result .= \Form::text($key . "[$name]", $value, $attributes);
                 $result .= "</div>";
             }
-
         } else {
             $result .= \Form::label(ucwords($prop['label']));
             $result .= \Form::text($name, $value, $attributes);
@@ -165,20 +182,29 @@ trait Scaffolding
         return $result;
     }
 
-    public function form_textarea($model,$name, $prop)
+    public function form_textarea($model, $name, $prop)
     {
         $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
-        $value      = empty($prop['value']) ? $model->$name : $prop['value'];
+        $value      = empty($prop['value']) ? @$model->$name : $prop['value'];
         $multi      = @$prop['multi_language'];
         $result     = "";
         if ($multi == true) {
             foreach (languages() as $key => $val) {
-                $result .= "<div class = 'multi_language_$key' style = 'margin-bottom:10px;'>";
+                $result .= "<div class = 'multi_language_$key' style = 'margin-bottom:10px;' >";
                 $result .= \Form::label(ucwords($prop['label']));
+
+                $value = @$prop['value'];
+                if (empty($prop['value'])) {
+                    if (method_exists(@$model, 'translate') == true) {
+                        $value = @$model->translate($key)->$name;
+                    } else {
+                        $value = @$model->$key->$name;
+                    }
+                }
+
                 $result .= \Form::textarea($key . "[$name]", $value, $attributes);
                 $result .= "</div>";
             }
-
         } else {
             $result .= \Form::label(ucwords($prop['label']));
             $result .= \Form::textarea($name, $value, $attributes);
@@ -187,35 +213,48 @@ trait Scaffolding
         return $result;
     }
 
-    public function form_image($name, $prop)
+    public function form_image($model, $name, $prop)
     {
         $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
-        $value      = empty($prop['value']) ? null : $prop['value'];
+        $value      = @$model->{$name};
         $slot       = $name;
-        $file       = \Form::file($slot, ['class' => 'form-control', 'id' => $slot, 'onchange' => "with_preview('" . $slot . "')"]);
-        $html       = $file;
-        if ($value == 'true') {
+        $file       = \Form::label(ucwords(@$prop['label']));
+        $file .= \Form::file($slot, ['class' => 'form-control', 'id' => $slot, 'onchange' => "with_preview('" . $slot . "')"]);
+        $file .= admin()->html->size_recomendation(@$prop['size_recomendation']);
+        $html = $file;
+        if (!empty($value)) {
             $html .= '<div id="div_preview_' . $slot . '"><p>&nbsp;</p>';
             $html .= '<img class="img-thumbnail" src="' . asset('contents/' . $value) . '"  width="200" height="200" id="image_preview_' . $slot . '"><br/>';
             $html .= '<br/>';
             $html .= '<a href="javascript:void(0);" onclick="removePreview(\'' . $name . '\')">Remove</a>';
-            $html .= '<input type="hidden" name="hidden_' . $slot . ' " value = "true"/>';
+            $html .= '<input type="hidden" name="hidden_' . $slot . '" value = "true"/>';
             $html .= '</div>';
         }
-
+        $html .= \Form::hidden('old_' . $name, $value);
         return $html;
 
     }
 
-    public function form_status()
+    public function form_status($model, $name, $prop)
     {
-        return admin()->html->selectStatus();
+        $name = 'status';
+        $prop = [
+            'label'      => 'Status',
+            'data'       => [
+                'publish' => 'Publish',
+                'draft'   => 'Draft',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+            ],
+        ];
+        return $this->form_select($model, $name, $prop);
     }
 
-    public function form_select($model,$name, $prop)
+    public function form_select($model, $name, $prop)
     {
         $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
-        $value      = empty($prop['value']) ? $model->$name : $prop['value'];
+        $value      = empty($prop['value']) ? @$model->$name : $prop['value'];
         $multi      = @$prop['multi_language'];
         $result     = "";
         if ($multi == true) {
@@ -242,7 +281,7 @@ trait Scaffolding
             $type              = !empty($prop['type']) ? $prop['type'] : 'text';
             $manipulate_method = "form_" . $type;
             $html .= "<div class='form-group'>";
-            $html .= $this->$manipulate_method($model,$name, $prop);
+            $html .= $this->$manipulate_method($model, $name, $prop);
             $html .= "</div>";
         }
         return $html;
@@ -300,18 +339,18 @@ trait Scaffolding
     {
         $inputs     = request()->all();
         $validation = \Validator::make(request()->all(), $this->manipulate_rules());
-    
+
         if ($validation->fails()) {
             return redirect()->back()->withErrors($validation->errors());
         }
-        
+
         return $this->create($this->model(), $inputs);
     }
 
     public function getUpdate($id)
     {
         $validation = \JsValidator::make($this->manipulate_rules(), $this->manipulate_rule_messages());
-        $model = $this->model()->findOrFail($id);
+        $model      = $this->model()->findOrFail($id);
         return $this->makeView('_form', [
             'model'      => $model,
             'inputs'     => $this->manipulate_forms($model),
@@ -323,12 +362,12 @@ trait Scaffolding
     {
         $inputs     = request()->all();
         $validation = \Validator::make(request()->all(), $this->manipulate_rules());
-        $model = $this->model()->findOrFail($id);
-        
+        $model      = $this->model()->findOrFail($id);
+
         if ($validation->fails()) {
             return redirect()->back()->withErrors($validation->errors());
         }
-        
+
         return $this->update($model, $inputs);
     }
 
@@ -340,5 +379,10 @@ trait Scaffolding
     public function getActionBool($id)
     {
         return $this->publish_draft($this->model()->findOrFail($id));
+    }
+
+    public function getUpdateOrder()
+    {
+        return $this->update_order($this->model());
     }
 }

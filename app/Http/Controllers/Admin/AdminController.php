@@ -16,7 +16,7 @@ class AdminController extends Controller
     public function __construct()
     {
     	$this->view = 'admin.';
-    	$this->titleMenu = Admin::getUser();
+    	$this->titleMenu = Admin::getMenu()->label;
         $this->breadCrumbs=Admin::breadCrumbs();
         $this->user=auth()->user();
         view()->share('titleMenu',$this->titleMenu);
@@ -155,7 +155,7 @@ class AdminController extends Controller
             return $imageName;
 
         }else{
-           if(isset($request->{$hiddenName}))
+            if(isset($request->{$hiddenName}))
             {
                 return $oldImage;
             }else{
@@ -163,7 +163,7 @@ class AdminController extends Controller
             }
         }
     }
-    
+
     public function publish_draft($model)
     {
         $message = "Data has been Published";
@@ -219,5 +219,5 @@ class AdminController extends Controller
         $this->model->insert($data);
     }
 
-    
+
 }
