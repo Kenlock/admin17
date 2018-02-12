@@ -15,10 +15,21 @@ trait Scaffolding
         return ['created_at', 'updated_at'];
     }
 
+    public function hide_default_field_form()
+    {
+        return ['id','slug','created_at','updated_at'];
+    }
+
     public function default_table_fields()
     {
         $from_table = $this->fields_from_table();
         return array_diff($from_table, $this->hide_default_fields());
+    }
+
+    public function default_form_fields()
+    {
+        $from_table = $this->fields_from_table();
+        return array_diff($from_table, $this->hide_default_field_form());
     }
 
     public function table_fields()
@@ -137,7 +148,7 @@ trait Scaffolding
 
     public function form()
     {
-        $fields = $this->default_table_fields();
+        $fields = $this->default_form_fields();
         $data   = [];
         foreach ($fields as $field) {
             $data[$field] = [
