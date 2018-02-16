@@ -178,7 +178,6 @@ return [
         Jenssegers\Agent\AgentServiceProvider::class,
         Appstract\BladeDirectives\BladeDirectivesServiceProvider::class,
         Dimsav\Translatable\TranslatableServiceProvider::class,
-        
         /*
          * Application Service Providers...
          */

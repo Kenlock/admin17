@@ -16,7 +16,7 @@ class AdminController extends Controller
     public function __construct()
     {
     	$this->view = 'admin.';
-    	$this->titleMenu = Admin::getMenu()->label;
+    	$this->titleMenu = @Admin::getMenu()->label;
         $this->breadCrumbs=Admin::breadCrumbs();
         $this->user=auth()->user();
         view()->share('titleMenu',$this->titleMenu);
