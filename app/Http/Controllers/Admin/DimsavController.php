@@ -18,7 +18,7 @@ class DimsavController extends AdminController
 
     public function getData()
     {
-        $model = $this->model->datatablesTranslations();
+        $model = $this->model->mergeTranslation()->whereLocale('en');
 
         return Table::of($model)
             ->addColumn('action', function ($model) {

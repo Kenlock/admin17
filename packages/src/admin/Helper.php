@@ -80,3 +80,18 @@ function isJson($string)
 {
     return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
 }
+
+function lang()
+{
+    $languages = langKeys();
+
+    $lang = app()->getLocale();
+
+    if(in_array($lang,$languages))
+    {
+        return $lang;
+    }else{
+        return config('admin.default_language');
+    }
+
+}

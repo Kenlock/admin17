@@ -6,4 +6,5 @@ return [
 		'en'=>'English',
 		'id'=>'Bahasa',
 	],
+	'default_language'=>'en',
 ];

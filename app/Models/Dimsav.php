@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use \Dimsav\Translatable\Translatable;
+use \Admin\Translation;
 
 class Dimsav extends Model  {
 
-    use \Dimsav\Translatable\Translatable;
+    use Translatable,Translation;
 
     public $translatedAttributes = ['name'];
     
@@ -45,20 +47,5 @@ class Dimsav extends Model  {
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
-
-    public function scopeDatatablesTranslations($query)
-    {
-        return $query->select('dimsavs.id', 'dimsav_translations.name', 'status', 'order')
-            
-            ->join('dimsav_translations', function ($join) {
-            
-                $join->on('dimsav_translations.dimsav_id', '=', 'dimsavs.id')
-            
-                    ->where('dimsav_translations.locale', 'en');
-            
-            })
-            
-            ->orderBy('order', 'asc');
-    }
 
 }
