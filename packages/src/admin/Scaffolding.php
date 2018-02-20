@@ -231,7 +231,10 @@ trait Scaffolding
         $slot       = $name;
         $file       = \Form::label(ucwords(@$prop['label']));
         $file .= \Form::file($slot, ['class' => 'form-control', 'id' => $slot, 'onchange' => "with_preview('" . $slot . "')"]);
-        $file .= admin()->html->size_recomendation(@$prop['size_recomendation']);
+        if(!empty(@$prop['size_recomendation']))
+        {
+            $file .= admin()->html->size_recomendation(@$prop['size_recomendation']);
+        }    
         $html = $file;
         if (!empty($value)) {
             $html .= '<div id="div_preview_' . $slot . '"><p>&nbsp;</p>';
@@ -248,26 +251,27 @@ trait Scaffolding
 
     public function form_banner_responsive($model, $name, $prop)
     {
+        $recomend = !empty(@$prop['size_recomendation']) ? @$prop['size_recomendation'] : [];
         $data = [
             $name.'' => [
                 'label'      => ucwords($name).' Large',
                 'type'       => 'image',
-                'size_recomendation' => '1920x990',
+                'size_recomendation' => @$recomend[0],
             ],
             $name.'_dekstop' => [
                 'label'      => ucwords($name).' Desktop',
                 'type'       => 'image',
-                'size_recomendation' => '769x526',
+                'size_recomendation' => @$recomend[1],
             ],
             $name.'_tablet' => [
                 'label'      => ucwords($name).' Tablet',
                 'type'       => 'image',
-                'size_recomendation' => '408x526',
+                'size_recomendation' => @$recomend[2],
             ],
             $name.'_mobile' => [
                 'label'      => ucwords($name).' Mobile',
                 'type'       => 'image',
-                'size_recomendation' => '311x526',
+                'size_recomendation' => @$recomend[3],
             ],
         ];
 
