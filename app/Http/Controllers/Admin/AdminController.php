@@ -15,18 +15,18 @@ class AdminController extends Controller
 
     public function __construct()
     {
-    	$this->view = 'admin.';
-    	$this->titleMenu = @Admin::getMenu()->label;
+        $this->view = 'admin.';
+        $this->titleMenu = @Admin::getMenu()->label;
         $this->breadCrumbs=Admin::breadCrumbs();
         $this->user=auth()->user();
         view()->share('titleMenu',$this->titleMenu);
         view()->share('breadCrumbs',$this->breadCrumbs);
-    	view()->share('elfinderPath','packages/barryvdh/elfinder');
+        view()->share('elfinderPath','packages/barryvdh/elfinder');
     }
 
     public function makeView($view,$data=[])
     {
-    	return view($this->view.$view,$data);
+        return view($this->view.$view,$data);
     }
 
     public function redirectAction($message,$action="",$session="")
@@ -135,7 +135,8 @@ class AdminController extends Controller
     public function handleUploadStatic($request,$fieldName,$resize=[])
     {
         $hiddenName = "hidden_$fieldName";
-        $oldImage = $request->old_image;
+        $str_old_image = "old_".$fieldName;
+        $oldImage = $request->{$str_old_image};
         $image = $request->file($fieldName);
         if(!empty($image))
         {
@@ -157,13 +158,13 @@ class AdminController extends Controller
         }else{
             if(isset($request->{$hiddenName}))
             {
-                return $oldImage;
+               return $oldImage;
             }else{
                 @unlink(public_path('contents/'.$oldImage));
             }
         }
     }
-
+    
     public function publish_draft($model)
     {
         $message = "Data has been Published";
@@ -219,5 +220,26 @@ class AdminController extends Controller
         $this->model->insert($data);
     }
 
+    public function handleUploadStaticResponsive($inputs,$name)
+    {
+        $data = [
+            $name,
+            $name.'_dekstop',
+            $name.'_tablet',
+            $name.'_mobile',
+        ];
 
+        $request = request();
+        foreach($data as $row)
+        {
+            $upload = $this->handleUploadStatic($request,$row);
+            if(!empty($upload))
+            {
+                $inputs[$row] = $upload;
+            }
+        }
+        return $inputs;
+    }
+
+    
 }

@@ -235,13 +235,52 @@ trait Scaffolding
         $html = $file;
         if (!empty($value)) {
             $html .= '<div id="div_preview_' . $slot . '"><p>&nbsp;</p>';
-            $html .= '<img class="img-thumbnail" src="' . asset('contents/' . $value) . '"  width="200" height="200" id="image_preview_' . $slot . '"><br/>';
+            $html .= '<img class="img-thumbnail" src="' . asset('contents/' . $value) . '" style =  "width:200px;height:200px;" width="200" height="200" id="image_preview_' . $slot . '"><br/>';
             $html .= '<br/>';
             $html .= '<a href="javascript:void(0);" onclick="removePreview(\'' . $name . '\')">Remove</a>';
             $html .= '<input type="hidden" name="hidden_' . $slot . '" value = "true"/>';
             $html .= '</div>';
         }
         $html .= \Form::hidden('old_' . $name, $value);
+        return $html;
+
+    }
+
+    public function form_banner_responsive($model, $name, $prop)
+    {
+        $data = [
+            $name.'' => [
+                'label'      => ucwords($name).' Large',
+                'type'       => 'image',
+                'size_recomendation' => '1920x990',
+            ],
+            $name.'_dekstop' => [
+                'label'      => ucwords($name).' Desktop',
+                'type'       => 'image',
+                'size_recomendation' => '769x526',
+            ],
+            $name.'_tablet' => [
+                'label'      => ucwords($name).' Tablet',
+                'type'       => 'image',
+                'size_recomendation' => '408x526',
+            ],
+            $name.'_mobile' => [
+                'label'      => ucwords($name).' Mobile',
+                'type'       => 'image',
+                'size_recomendation' => '311x526',
+            ],
+        ];
+
+        $html = "<div class = 'row'>";
+            $html.="<div class = 'col-md-12'>";
+                    foreach($data as $name => $attribute)
+                    {
+                        $html.="<div class = 'col-md-3'>";
+                            $html .= $this->form_image($model,$name,$attribute).'<br/>';
+                        $html.="</div>";
+                    }
+            $html .= "</div>";
+        $html.="</div>";
         return $html;
 
     }
