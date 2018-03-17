@@ -12,6 +12,7 @@ class Permission extends Model
     public function roleHasPermissionThisMethod($menu = "", $method = "")
     {
         $menu   = Admin::getMenu($menu);
+        $method = !empty($method) ? $method : request()->segment(3);
         $result = 'method_found';
         if (!empty($menu)) {
             $method = $menu->methods()->where('method', $method)->first();
@@ -29,6 +30,7 @@ class Permission extends Model
                     $result = 'method_not_found_on_role';
                 }
             } else {
+
                 $result = 'method_not_protected';
             }
         }
