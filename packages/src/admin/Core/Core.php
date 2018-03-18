@@ -147,23 +147,53 @@ class Core
 
     }
 
+    public function menuExistChild()
+    {
+        $method = $this->getMethod('index');
+        $user = \Auth::user();
+        $role = $user->role;
+        $menu = $this->menu->select('id')->get()->toArray();
+        if($role->code != 'superadmin')
+        {
+            $menu = $this->menu
+                ->select('menus.id')
+                ->join('menu_methods','menu_methods.menu_id','menus.id')
+                ->join('permissions','permissions.menu_method_id','menu_methods.id')
+                // ->where('menus.slug','!=','dashboard')
+                ->where('method_id',$method->id)
+                ->where('role_id',$role->id)
+                // ->where('menus.parent_slug','!=',null)
+                ->get()
+                ->toArray();
+        }
+
+        return array_flatten($menu);
+    }
+    
     public function displayMenuChilds($row)
     {
         $html = '<ul class="treeview-menu">';
+        $menuExists = $this->menuExistChild();
         foreach ($row->childs()->orderBy('order', 'asc')->get() as $c) {
-            $active = $this->activeChild($c->slug);
-            $count  = $c->childs()->count();
-            $url    = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';
-            $html .= "<li class='" . $active . "'>";
-            $html .= '<a href="' . $url . '"><i class="fa fa-circle-o"></i> ' . $c->label;
-            if ($count > 0) {
-                $html .= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
+            
+            if(in_array($c->id, $menuExists))
+            {
+                $active = $this->activeChild($c->slug);
+                $count  = $c->childs()->count();
+                $url    = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';
+                $html .= "<li class='" . $active . "'>";
+                $html .= '<a href="' . $url . '"><i class="fa fa-circle-o"></i> ' . $c->label;
+                if ($count > 0) {
+                    $html .= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
+                }
+                $html .= "</a>";
+                if ($count > 0) {
+                    $html .= $this->displayMenuChilds($c);
+                }
+                $html .= "</li>";
             }
-            $html .= "</a>";
-            if ($count > 0) {
-                $html .= $this->displayMenuChilds($c);
-            }
-            $html .= "</li>";
+
+            
         }
         $html .= "</ul>";
         return $html;
@@ -194,9 +224,21 @@ class Core
 
     public function convertQueryMenuToHtml()
     {
-        $menus = $this->menu->with('childs')->getParents()->get();
+        $childExist = $this->menuExistChild();
+        $menus = $this->menu->with('childs')->whereHas('childs',function($query)use($childExist){
+            $query->whereIn('id',$childExist);
+        })
+        // ->where('menus.slug','!=','dashboard')
+        ->getParents()
+        ->get();
+
+        $dashboard = $this->menu->whereSlug('dashboard')->get();
+
+        $resultMenu = $dashboard->merge($menus);
+
         $html  = "";
-        foreach ($menus as $row) {
+
+        foreach ($resultMenu as $row) {
             $icon = !empty($row->icon) ? $row->icon : 'fa fa-file';
                
             $countChild = $row->childs()->count();
