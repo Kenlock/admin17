@@ -229,12 +229,12 @@ trait Scaffolding
         $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
         $value      = @$model->{$name};
         $slot       = $name;
-        $file       = \Form::label(ucwords(@$prop['label']));
+        $file       = \Form::label(ucwords(@$prop['label'])) . "<br/><small> (jpg,png,gif) (Max : 2 MB) (" . @$prop['size_recomendation'] . ")</small>";
         $file .= \Form::file($slot, ['class' => 'form-control', 'id' => $slot, 'onchange' => "with_preview('" . $slot . "')"]);
-        if(!empty(@$prop['size_recomendation']))
-        {
-            $file .= admin()->html->size_recomendation(@$prop['size_recomendation']);
-        }    
+        // if(!empty(@$prop['size_recomendation']))
+        // {
+        //     $file .= admin()->html->size_recomendation(@$prop['size_recomendation']);
+        // }
         $html = $file;
         if (!empty($value)) {
             $html .= '<div id="div_preview_' . $slot . '"><p>&nbsp;</p>';

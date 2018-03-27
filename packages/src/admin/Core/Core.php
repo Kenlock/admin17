@@ -40,7 +40,7 @@ class Core
                 'methods'     => @$valParent['methods'],
                 'order'       => $no,
                 'is_active'   => 'true',
-                'icon'   => @$valParent['icon'],
+                'icon'        => @$valParent['icon'],
             ];
 
             if (isset($valParent['child'])) {
@@ -150,34 +150,32 @@ class Core
     public function menuExistChild()
     {
         $method = $this->getMethod('index');
-        $user = \Auth::user();
-        $role = $user->role;
-        $menu = $this->menu->select('id')->get()->toArray();
-        if($role->code != 'superadmin')
-        {
+        $user   = \Auth::user();
+        $role   = $user->role;
+        $menu   = $this->menu->select('id')->get()->toArray();
+        if ($role->code != 'superadmin') {
             $menu = $this->menu
                 ->select('menus.id')
-                ->join('menu_methods','menu_methods.menu_id','menus.id')
-                ->join('permissions','permissions.menu_method_id','menu_methods.id')
-                // ->where('menus.slug','!=','dashboard')
-                ->where('method_id',$method->id)
-                ->where('role_id',$role->id)
-                // ->where('menus.parent_slug','!=',null)
+                ->join('menu_methods', 'menu_methods.menu_id', 'menus.id')
+                ->join('permissions', 'permissions.menu_method_id', 'menu_methods.id')
+            // ->where('menus.slug','!=','dashboard')
+                ->where('method_id', $method->id)
+                ->where('role_id', $role->id)
+            // ->where('menus.parent_slug','!=',null)
                 ->get()
                 ->toArray();
         }
 
         return array_flatten($menu);
     }
-    
+
     public function displayMenuChilds($row)
     {
-        $html = '<ul class="treeview-menu">';
+        $html       = '<ul class="treeview-menu">';
         $menuExists = $this->menuExistChild();
         foreach ($row->childs()->orderBy('order', 'asc')->get() as $c) {
-            
-            if(in_array($c->id, $menuExists))
-            {
+
+            if (in_array($c->id, $menuExists)) {
                 $active = $this->activeChild($c->slug);
                 $count  = $c->childs()->count();
                 $url    = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';
@@ -193,7 +191,6 @@ class Core
                 $html .= "</li>";
             }
 
-            
         }
         $html .= "</ul>";
         return $html;
@@ -225,22 +222,22 @@ class Core
     public function convertQueryMenuToHtml()
     {
         $childExist = $this->menuExistChild();
-        $menus = $this->menu->with('childs')->whereHas('childs',function($query)use($childExist){
-            $query->whereIn('id',$childExist);
+        $menus      = $this->menu->with('childs')->whereHas('childs', function ($query) use ($childExist) {
+            $query->whereIn('id', $childExist);
         })
         // ->where('menus.slug','!=','dashboard')
-        ->getParents()
-        ->get();
+            ->getParents()
+            ->get();
 
         $dashboard = $this->menu->whereSlug('dashboard')->get();
 
         $resultMenu = $dashboard->merge($menus);
 
-        $html  = "";
+        $html = "";
 
         foreach ($resultMenu as $row) {
             $icon = !empty($row->icon) ? $row->icon : 'fa fa-file';
-               
+
             $countChild = $row->childs()->count();
             $class      = $countChild > 0 ? 'treeview' : ' ';
             $active     = $this->active($row->slug);
@@ -249,8 +246,8 @@ class Core
             $html .= '<li class = "' . $class . ' ' . $active . '">';
 
             $html .= "<a href='$url'>";
-            
-            $html .= '<i class="'.$icon.'"></i> <span>' . $row->label . '</span>';
+
+            $html .= '<i class="' . $icon . '"></i> <span>' . $row->label . '</span>';
             if ($countChild > 0) {
                 $html .= ' <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
             }
@@ -279,14 +276,6 @@ class Core
 
     public function displayMenus()
     {
-        // if(Cache::has('displayMenus'))
-        // {
-        //  $result=Cache::get('displayMenus');
-        // }else{
-        //  $result=$this->convertQueryMenuToHtml();
-        //  Cache::put('displayMenus',$result,1);
-        // }
-
         $result = $this->convertQueryMenuToHtml();
         return $result;
     }

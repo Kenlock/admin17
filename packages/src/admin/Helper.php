@@ -1,5 +1,10 @@
 <?php
 
+function get($get)
+{
+    return request()->get($get);
+}
+
 function assetAdmin($path)
 {
     return asset('admin/' . $path);
