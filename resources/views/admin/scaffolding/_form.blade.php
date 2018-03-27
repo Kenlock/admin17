@@ -5,7 +5,7 @@
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    {!! $titleMenu !!} {{ ucwords(Admin::rawAction()) }}
+                    {!! $titleMenu !!} - {{ ucwords(Admin::rawAction()) }}
                 </h3>
             </div>
             <!-- /.box-header -->

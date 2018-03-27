@@ -17,7 +17,7 @@ trait Scaffolding
 
     public function hide_default_field_form()
     {
-        return ['id','slug','created_at','updated_at'];
+        return ['id', 'slug', 'created_at', 'updated_at'];
     }
 
     public function default_table_fields()
@@ -138,6 +138,7 @@ trait Scaffolding
             'table_headers' => $this->table_headers(),
             'columns'       => $this->table_records(),
             'row_order'     => $this->rowOrder(),
+            'html'          => @$this->table_fields()['html'],
         ]);
     }
 
@@ -171,8 +172,7 @@ trait Scaffolding
         if ($multi == true) {
             foreach (languages() as $key => $val) {
                 $result .= "<div class = 'multi_language_$key' style = 'margin-bottom:10px;' >";
-                $result .= \Form::label(ucwords($prop['label']));
-
+                $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
                 $value = @$prop['value'];
                 if (empty($prop['value'])) {
                     if (method_exists(@$model, 'translate') == true) {
@@ -186,7 +186,7 @@ trait Scaffolding
                 $result .= "</div>";
             }
         } else {
-            $result .= \Form::label(ucwords($prop['label']));
+            $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
             $result .= \Form::text($name, $value, $attributes);
         }
 
@@ -251,40 +251,52 @@ trait Scaffolding
 
     public function form_banner_responsive($model, $name, $prop)
     {
-        $recomend = !empty(@$prop['size_recomendation']) ? @$prop['size_recomendation'] : [];
-        $data = [
-            $name.'' => [
-                'label'      => ucwords($name).' Large',
-                'type'       => 'image',
+
+        $recomend = !empty(@$prop['size_recomendation']) ? @$prop['size_recomendation'] : ['1920x990', '1024×700', '768x990', '320x540'];
+        $data     = [
+            $name . ''         => [
+                'label'              => ucwords($name) . ' Large',
+                'type'               => 'image',
                 'size_recomendation' => @$recomend[0],
+                'validation'=>[
+                    'rules'=>'image',
+                ],
             ],
-            $name.'_dekstop' => [
-                'label'      => ucwords($name).' Desktop',
-                'type'       => 'image',
+            $name . '_desktop' => [
+                'label'              => ucwords($name) . ' Desktop',
+                'type'               => 'image',
                 'size_recomendation' => @$recomend[1],
+                'validation'=>[
+                    'rules'=>'image',
+                ],
             ],
-            $name.'_tablet' => [
-                'label'      => ucwords($name).' Tablet',
-                'type'       => 'image',
+            $name . '_tablet'  => [
+                'label'              => ucwords($name) . ' Tablet',
+                'type'               => 'image',
                 'size_recomendation' => @$recomend[2],
+                'validation'=>[
+                    'rules'=>'image',
+                ],
             ],
-            $name.'_mobile' => [
-                'label'      => ucwords($name).' Mobile',
-                'type'       => 'image',
+            $name . '_mobile'  => [
+                'label'              => ucwords($name) . ' Mobile',
+                'type'               => 'image',
                 'size_recomendation' => @$recomend[3],
+                'validation'=>[
+                    'rules'=>'image',
+                ],
             ],
         ];
-
+        
         $html = "<div class = 'row'>";
-            $html.="<div class = 'col-md-12'>";
-                    foreach($data as $name => $attribute)
-                    {
-                        $html.="<div class = 'col-md-3'>";
-                            $html .= $this->form_image($model,$name,$attribute).'<br/>';
-                        $html.="</div>";
-                    }
+        $html .= "<div class = 'col-md-12'>";
+        foreach ($data as $name => $attribute) {
+            $html .= "<div class = 'col-md-3'>";
+            $html .= $this->form_image($model, $name, $attribute) . '<br/>';
             $html .= "</div>";
-        $html.="</div>";
+        }
+        $html .= "</div>";
+        $html .= "</div>";
         return $html;
 
     }
