@@ -61,6 +61,11 @@
             });
         </script>
     @endforeach
+
+@if(!empty($addJsForm))
+    @include($addJsForm)
+@endif
+
 @endpush
 @push('style')
     <style type="text/css">

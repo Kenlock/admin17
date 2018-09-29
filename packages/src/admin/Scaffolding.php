@@ -147,6 +147,11 @@ trait Scaffolding
         return view('admin.scaffolding.' . $view, $data);
     }
 
+    public function addJsForm()
+    {
+        return null;
+    }
+
     public function form()
     {
         $fields = $this->default_form_fields();
@@ -188,6 +193,36 @@ trait Scaffolding
         } else {
             $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
             $result .= \Form::text($name, $value, $attributes);
+        }
+
+        return $result;
+    }
+
+    public function form_numeric($model, $name, $prop)
+    {
+        $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
+        $value      = empty($prop['value']) ? @$model->$name : $prop['value'];
+        $multi      = @$prop['multi_language'];
+        $result     = "";
+        if ($multi == true) {
+            foreach (languages() as $key => $val) {
+                $result .= "<div class = 'multi_language_$key' style = 'margin-bottom:10px;' >";
+                $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
+                $value = @$prop['value'];
+                if (empty($prop['value'])) {
+                    if (method_exists(@$model, 'translate') == true) {
+                        $value = @$model->translate($key)->$name;
+                    } else {
+                        $value = @$model->$key->$name;
+                    }
+                }
+
+                $result .= \Form::numeric($key . "[$name]", $value, $attributes);
+                $result .= "</div>";
+            }
+        } else {
+            $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
+            $result .= \Form::numeric($name, $value, $attributes);
         }
 
         return $result;
@@ -258,36 +293,36 @@ trait Scaffolding
                 'label'              => ucwords($name) . ' Large',
                 'type'               => 'image',
                 'size_recomendation' => @$recomend[0],
-                'validation'=>[
-                    'rules'=>'image',
+                'validation'         => [
+                    'rules' => 'image',
                 ],
             ],
             $name . '_desktop' => [
                 'label'              => ucwords($name) . ' Desktop',
                 'type'               => 'image',
                 'size_recomendation' => @$recomend[1],
-                'validation'=>[
-                    'rules'=>'image',
+                'validation'         => [
+                    'rules' => 'image',
                 ],
             ],
             $name . '_tablet'  => [
                 'label'              => ucwords($name) . ' Tablet',
                 'type'               => 'image',
                 'size_recomendation' => @$recomend[2],
-                'validation'=>[
-                    'rules'=>'image',
+                'validation'         => [
+                    'rules' => 'image',
                 ],
             ],
             $name . '_mobile'  => [
                 'label'              => ucwords($name) . ' Mobile',
                 'type'               => 'image',
                 'size_recomendation' => @$recomend[3],
-                'validation'=>[
-                    'rules'=>'image',
+                'validation'         => [
+                    'rules' => 'image',
                 ],
             ],
         ];
-        
+
         $html = "<div class = 'row'>";
         $html .= "<div class = 'col-md-12'>";
         foreach ($data as $name => $attribute) {
@@ -398,12 +433,18 @@ trait Scaffolding
             'model'      => $this->model(),
             'inputs'     => $this->manipulate_forms($this->model()),
             'validation' => $validation,
+            'addJsForm'  => $this->addJsForm(),
         ]);
+    }
+
+    public function beforeCreate()
+    {
+        return request()->all();
     }
 
     public function postCreate()
     {
-        $inputs     = request()->all();
+        $inputs     = $this->beforeCreate();
         $validation = \Validator::make(request()->all(), $this->manipulate_rules());
 
         if ($validation->fails()) {
@@ -421,12 +462,18 @@ trait Scaffolding
             'model'      => $model,
             'inputs'     => $this->manipulate_forms($model),
             'validation' => $validation,
+            'addJsForm'  => $this->addJsForm(),
         ]);
+    }
+
+    public function beforeUpdate()
+    {
+        return request()->all();
     }
 
     public function postUpdate($id)
     {
-        $inputs     = request()->all();
+        $inputs     = $this->beforeUpdate();
         $validation = \Validator::make(request()->all(), $this->manipulate_rules());
         $model      = $this->model()->findOrFail($id);
 
