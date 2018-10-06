@@ -198,6 +198,36 @@ trait Scaffolding
         return $result;
     }
 
+    public function form_hidden($model, $name, $prop)
+    {
+        $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
+        $value      = empty($prop['value']) ? @$model->$name : $prop['value'];
+        $multi      = @$prop['multi_language'];
+        $result     = "";
+        if ($multi == true) {
+            foreach (languages() as $key => $val) {
+                $result .= "<div class = 'multi_language_$key' style = 'margin-bottom:10px;' >";
+                $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
+                $value = @$prop['value'];
+                if (empty($prop['value'])) {
+                    if (method_exists(@$model, 'translate') == true) {
+                        $value = @$model->translate($key)->$name;
+                    } else {
+                        $value = @$model->$key->$name;
+                    }
+                }
+
+                $result .= \Form::hidden($key . "[$name]", $value, $attributes);
+                $result .= "</div>";
+            }
+        } else {
+            // $result .= \Form::label(ucwords($prop['label'])) . "&nbsp;<small>" . @$prop['label_small'] . "</small>";
+            $result .= \Form::hidden($name, $value, $attributes);
+        }
+
+        return $result;
+    }
+
     public function form_numeric($model, $name, $prop)
     {
         $attributes = !empty($prop['attributes']) ? $prop['attributes'] : [];
@@ -426,14 +456,20 @@ trait Scaffolding
         return $validation;
     }
 
+    public function addAppendForm()
+    {
+        return null;
+    }
+
     public function getCreate()
     {
         $validation = \JsValidator::make($this->manipulate_rules(), $this->manipulate_rule_messages());
         return $this->makeView('_form', [
-            'model'      => $this->model(),
-            'inputs'     => $this->manipulate_forms($this->model()),
-            'validation' => $validation,
-            'addJsForm'  => $this->addJsForm(),
+            'model'         => $this->model(),
+            'inputs'        => $this->manipulate_forms($this->model()),
+            'validation'    => $validation,
+            'addJsForm'     => $this->addJsForm(),
+            'addAppendForm' => $this->addAppendForm(),
         ]);
     }
 
@@ -463,6 +499,7 @@ trait Scaffolding
             'inputs'     => $this->manipulate_forms($model),
             'validation' => $validation,
             'addJsForm'  => $this->addJsForm(),
+            'addAppendForm' => $this->addAppendForm(),
         ]);
     }
 

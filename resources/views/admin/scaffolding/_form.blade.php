@@ -14,7 +14,11 @@
             <div class="box-body">
                 @include("admin.flashes")
                 {!! $inputs !!}
-
+                
+                @if(!empty($addAppendForm))
+                    @include($addAppendForm)
+                @endif
+                
                 <div id="tabs" style="display:none;">
                     <ul>
                     @foreach(languages() as $key => $val)
