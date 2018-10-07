@@ -100,3 +100,17 @@ function lang()
     }
 
 }
+
+
+function newModel($model)
+{
+    $strModel = "App\\Models\\$model";
+
+    return new $strModel();
+}
+
+function make_loop($n)
+{
+    $result = str_pad($n + 1, 7, 0, STR_PAD_LEFT);
+    return $result;
+}
