@@ -69,9 +69,9 @@ class ScaffoldingController extends AdminController
         ];
     }
     /*
-    
+
     Sample Manipulate Form
-    
+
     public function form()
     {
         return [
@@ -115,7 +115,7 @@ class ScaffoldingController extends AdminController
             ],
         ];
     }
-    
-    */    
+
+    */
 
 }

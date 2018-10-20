@@ -34,7 +34,7 @@ class LoginController extends Controller
     public function postForgotPassword(Request $request)
     {
         $this->validate($request,['email'=>'required|email']);
-        
+
         $model=User::whereEmail($request->email)->first();
         if(empty($model->id))
         {
@@ -69,7 +69,7 @@ class LoginController extends Controller
     public function postNewPassword(Request $request,$token)
     {
         $this->validate($request,['password'=>'required|min:5','verify_password'=>'same:password']);
-        
+
         $model = $this->validateToken($token);
 
         $model->update([
@@ -83,8 +83,9 @@ class LoginController extends Controller
 
     public function getLogout()
     {
+        $auth = auth()->user()->role->id;
+        \Cache::forget('admin_menu_array'.$auth);
         \Auth::logout();
-
         return redirect('login');
     }
 }

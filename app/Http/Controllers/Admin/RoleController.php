@@ -116,7 +116,7 @@ class RoleController extends AdminController
 		try
 		{
 			$data = $this->beforeSave($request->all());
-	        $model = $this->model->find($id);
+	    $model = $this->model->find($id);
 			$model->update($data);
 
 			$deletePermission = $model->permissions()->delete();
@@ -137,6 +137,7 @@ class RoleController extends AdminController
 				}
 			}
 			Permission::insert($permission);
+			\Cache::forget('admin_menu_array'.$model->id);
 			DB::commit();
 			return $this->redirectActionSuccess('Data has been updated');
 

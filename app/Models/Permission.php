@@ -23,14 +23,12 @@ class Permission extends Model
                     ->where('method_id', $method->id)
                     ->first();
                 if (!empty($menuMethod->id) || Admin::getUser()->role->code == 'superadmin')
-                // if(!empty($menuMethod->id))
                 {
                     $result = 'method_found';
                 } else {
                     $result = 'method_not_found_on_role';
                 }
             } else {
-
                 $result = 'method_not_protected';
             }
         }

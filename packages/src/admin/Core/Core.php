@@ -72,7 +72,6 @@ class Core
                     }
                 }
             }
-
         }
 
         return $result;
@@ -83,8 +82,7 @@ class Core
         $menus = $this->readMenus();
         $slugs = array_pluck($menus, 'slug');
         \DB::beginTransaction();
-        try
-        {
+        try {
             $this->menu->whereNotIn('slug', $slugs)->delete();
             $getMethod = [];
             $loop      = 0;
@@ -124,7 +122,6 @@ class Core
             \DB::commit();
 
             return true;
-
         } catch (\Exception $e) {
             \DB::rollback();
             return $e->getMessage();
@@ -144,7 +141,6 @@ class Core
                 return 'active';
             }
         }
-
     }
 
     public function menuExistChild()
@@ -174,7 +170,6 @@ class Core
         $html       = '<ul class="treeview-menu">';
         $menuExists = $this->menuExistChild();
         foreach ($row->childs()->orderBy('order', 'asc')->get() as $c) {
-
             if (in_array($c->id, $menuExists)) {
                 $active = $this->activeChild($c->slug);
                 $count  = $c->childs()->count();
@@ -190,7 +185,6 @@ class Core
                 }
                 $html .= "</li>";
             }
-
         }
         $html .= "</ul>";
         return $html;
@@ -213,6 +207,27 @@ class Core
                         $result = 'active';
                     }
                 }
+            }
+        }
+
+        return $result;
+    }
+
+    public function activeArray($slug,$parents = [])
+    {
+        $result = "";
+        if ($this->rawMenu() == $slug) {
+            $result = 'active';
+        } else {
+            if(count($parents['childs']) > 0)
+            {
+              foreach($parents['childs'] as $row)
+              {
+                if($row['slug'] == $this->rawMenu())
+                {
+                  $result = 'active';
+                }
+              }
             }
         }
 
@@ -242,7 +257,7 @@ class Core
             $class      = $countChild > 0 ? 'treeview' : ' ';
             $active     = $this->active($row->slug);
             $url        = $countChild == 0 ? $this->urlBackend("$row->slug/index") : '#';
-
+            $active = "";
             $html .= '<li class = "' . $class . ' ' . $active . '">';
 
             $html .= "<a href='$url'>";
@@ -263,6 +278,87 @@ class Core
         return $html;
     }
 
+    public function arrayChilds($row)
+    {
+        $arrayChilds = [];
+        $menuExists = $this->menuExistChild();
+        foreach ($row->childs()->orderBy('order', 'asc')->get() as $c) {
+            if (in_array($c->id, $menuExists)) {
+                $count  = $c->childs()->count();
+                $url    = $count == 0 ? $this->urlBackend("$c->slug/index") : '#';
+                $haveChild = false;
+                $dataChilds = [];
+
+                if ($count > 0) {
+                    $haveChild = true;
+                    $dataChilds = $this->arrayChilds($row);
+                }
+
+                $arrayChilds[] = [
+                  'class' => null,
+                  'is_parent' => true,
+                  'icon' => null,
+                  'url' => $url,
+                  'label' => $c->label,
+                  'have_child' => $haveChild,
+                  'childs' => $dataChilds,
+                  'slug' => $c->slug,
+                ];
+            }
+        }
+
+        return $arrayChilds;
+    }
+
+    public function convertQueryMenuToArray()
+    {
+        $auth = auth()->user()->role->id;
+
+        return Cache::remember('admin_menu_array'.$auth,120,function(){
+          $childExist = $this->menuExistChild();
+          $menus      = $this->menu->with('childs')->whereHas('childs', function ($query) use ($childExist) {
+              $query->whereIn('id', $childExist);
+          })
+          // ->where('menus.slug','!=','dashboard')
+              ->getParents()
+              ->get();
+
+          $dashboard = $this->menu->whereSlug('dashboard')->get();
+
+          $resultMenu = $dashboard->merge($menus);
+
+          $html = "";
+          $arrayResult = [];
+          foreach ($resultMenu as $row) {
+              $icon = !empty($row->icon) ? $row->icon : 'fa fa-file';
+              $countChild = $row->childs()->count();
+              $class      = $countChild > 0 ? 'treeview' : ' ';
+              $active     = $this->active($row->slug);
+              $url        = $countChild == 0 ? $this->urlBackend("$row->slug/index") : '#';
+
+              $haveChild = false;
+              $dataChilds = [];
+              if ($countChild > 0) {
+                  $haveChild = true;
+                  $dataChilds = $this->arrayChilds($row);
+              }
+
+              $arrayResult[] = [
+                'class' => $class,
+                'is_parent' => true,
+                'icon' => $icon,
+                'url' => $url,
+                'label' => $row->label,
+                'have_child' => $haveChild,
+                'childs' => $dataChilds,
+                'slug' => $row->slug,
+              ];
+          }
+
+          return $arrayResult;
+        });
+    }
+
     public function ifCache($key, $var, $remember)
     {
         if (Cache::has($key)) {
@@ -276,8 +372,7 @@ class Core
 
     public function displayMenus()
     {
-        $result = $this->convertQueryMenuToHtml();
-        return $result;
+        return $result = $this->convertQueryMenuToHtml();
     }
 
     public function controllerPath($controller)
@@ -486,5 +581,4 @@ class Core
             return asset('contents/' . $auth->avatar);
         }
     }
-
 }

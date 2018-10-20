@@ -27,9 +27,9 @@ class DashboardController extends AdminController
     public function lastSevenDays()
     {
         $now = parse(date("Ymd"));
-        
+
         $start_date=$now->addDays(-7);
-        
+
         $result=[];
         $no=0;
         for($date=$start_date;$date->lte(parse(date("Ymd")))>0;$date->addDays(1))
@@ -58,7 +58,7 @@ class DashboardController extends AdminController
 
     public function getIndex()
     {
-        return $this->makeView('index',[
+				return $this->makeView('index',[
             'categories'=> $this->lastSevenDays()->toJson(),
             'data'=> $this->getDataLastSevenDays()->toJson(),
         ]);

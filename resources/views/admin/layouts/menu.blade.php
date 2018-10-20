@@ -15,7 +15,31 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
         <li class="header">MAIN NAVIGATION</li>
-        {!! Admin::displayMenus() !!}
+        @foreach(Admin::convertQueryMenuToArray() as $index => $menu)
+          <li class = "{{ count($menu['childs']) > 0 ? 'treeview' : '' }} {{ Admin::activeArray($menu['slug'],$menu) }}">
+            <a href="{{ $menu['url'] }}">
+              <i class="fa {{ $menu['icon'] }}"></i>
+              <span>{{ $menu['label'] }}</span>
+              @if(count($menu['childs']) > 0)
+                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+              @endif
+            </a>
+
+            @if(count($menu['childs']) > 0)
+              <ul class="treeview-menu">
+                @foreach($menu['childs'] as $indexChild => $menuChild)
+                    <li>
+                      <a href="{{ $menuChild['url'] }}">
+                        <i class="fa fa-circle-o"></i>
+                        {{ $menuChild['label'] }}
+                      </a>
+                    </li>
+                @endforeach
+              </ul>
+            @endif
+
+          </li>
+        @endforeach
       </ul>
     </section>
     <!-- /.sidebar -->

@@ -1,5 +1,9 @@
 @push('scripts')
 <script type="text/javascript">
+$(window).on('load',function(){
+  $(".loader").hide();
+});
+
 function with_preview(id,imageSrc="")
 {
     $("#div_preview_"+id).remove();
@@ -45,7 +49,13 @@ $(document).ready(function(){
 	   }, 500);
 	});
 
-	//$('select').select2();
+  $(".datepicker").datepicker({
+    changeMonth:true,
+    changeYear:true,
+    dateFormat: "yy-mm-dd",
+  });
+
+  $('.select2').select2();
 });
 </script>
 @endpush

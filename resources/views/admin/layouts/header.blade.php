@@ -28,6 +28,7 @@
   <!-- elfinder -->
   <link rel="stylesheet" type="text/css" href="{{ asset($elfinderPath.'/css/elfinder.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ asset($elfinderPath.'/css/theme.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ assetAdmin('app.css') }}">
   <!-- -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -37,6 +38,7 @@
   @stack('style')
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+<div class="loader"></div>
 <!-- Site wrapper -->
 <div class="wrapper">
 
