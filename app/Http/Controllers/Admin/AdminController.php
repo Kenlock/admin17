@@ -164,7 +164,7 @@ class AdminController extends Controller
             }
         }
     }
-    
+
     public function publish_draft($model)
     {
         $message = "Data has been Published";
@@ -241,5 +241,5 @@ class AdminController extends Controller
         return $inputs;
     }
 
-    
+
 }

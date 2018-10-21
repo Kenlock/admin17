@@ -434,21 +434,23 @@ class Core
         return $exp[1];
     }
 
+    public function cacheMenuModel()
+    {
+      return Cache::remember('menu_model_all',120,function(){
+        return $this->menu->all();
+      });
+    }
+
     public function getMenu($slug = "", $relation = [])
     {
-        $model = $this->menu;
+      $collect = $this->cacheMenuModel();
+      if (!empty($slug)) {
+          $model = $collect->where('slug',$slug);
+      } else {
+          $model = $collect->where('slug',$this->rawMenu());
+      }
 
-        if (!empty($relation)) {
-            $model->with($relation);
-        }
-
-        if (!empty($slug)) {
-            $model = $model->whereSlug($slug);
-        } else {
-            $model = $model->whereSlug($this->rawMenu());
-        }
-
-        return $model->first();
+      return $collect->first();
     }
 
     public function getParentMenu($slug = "")
