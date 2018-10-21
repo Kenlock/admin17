@@ -84,7 +84,7 @@ class LoginController extends Controller
     public function getLogout()
     {
         $auth = auth()->user()->role->id;
-        \Cache::forget('admin_menu_array'.$auth);
+        // \Cache::forget('admin_menu_array'.$auth);
         \Auth::logout();
         return redirect('login');
     }
