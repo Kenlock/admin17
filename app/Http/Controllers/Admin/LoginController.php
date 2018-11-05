@@ -20,7 +20,7 @@ class LoginController extends Controller
     	$attempt = \Auth::attempt(['email'=>$request->email,'password'=>$request->password,'status'=>'active']);
     	if($attempt==true)
     	{
-    		return redirect(Admin::urlBackend('dashboard'));
+    		return redirect()->intended(Admin::urlBackend('dashboard'));
     	}else{
     		return redirect()->back()->with('info','Your account not found');
     	}

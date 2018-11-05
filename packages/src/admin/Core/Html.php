@@ -98,11 +98,21 @@ class Html
         $menu =  \Admin::getMenu();
         $method= \Admin::getMethod($method);
         $model = new \App\Models\MenuMethod();
-        $cek = $model->where('menu_id',$menu->id)
-            ->where('method_id',$method->id)
-            ->count();
+        $result = false;
 
-        return $cek > 0 ? true : false;
+        if(!empty($method))
+        {
+            $cek = $model->where('menu_id',$menu->id)
+                ->where('method_id',$method->id)
+                ->count();
+            
+            if($cek > 0)
+            {
+                $result = true;
+            }
+        }
+        
+        return $result;
     }
 
     public function linkActions($model)
@@ -114,12 +124,12 @@ class Html
             $ucwords    = ucwords($method);
             $function   = "link$ucwords";
             $permission = $this->permission->roleHasPermissionThisMethod("", $method);
-            if ($permission == 'method_found') {
+            if ($permission == 'method_found' || $permission == 'method_not_protected') {
                 $cek =  $this->cekMenuMethod($method);  
                 if($cek == true)
                 {
-                     $str .= $this->{$function}($model) . '  ';
-                }        
+                    $str .= $this->{$function}($model) . '  ';
+                }
             }
         }
         return $str;

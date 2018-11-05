@@ -449,8 +449,8 @@ class Core
       } else {
           $model = $collect->where('slug',$this->rawMenu());
       }
-
-      return $collect->first();
+      
+      return $model->first();
     }
 
     public function getParentMenu($slug = "")
